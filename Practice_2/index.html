@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="StudentBudget helps students track their daily allowance, expenses, and savings.">
+  <title>StudentBudget by Kjrkzuu</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230f1c3a'/%3E%3Cpath d='M9 23v-6M16 23V12M23 23V8' stroke='%233ddc97' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- Icon sprite: every icon in the app is drawn inline, no external files -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v3"/><path d="M4 7.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 1 4 5.5"/><circle cx="16" cy="13.5" r="1.1"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 8h5M9.5 12h5"/></symbol>
+    <symbol id="i-savings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6.5v11M15 9.2c-.5-1-1.600-1.500-3-1.500-1.700 0-2.800.8-2.800 2 0 3 5.800 1.400 5.800 4.200 0 1.200-1.200 2-3 2-1.500 0-2.600-.6-3.100-1.700"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3.5 12a8.500 8.500 0 1 0 2.600-6.100"/><path d="M3.500 4.500v4h4"/><path d="M12 7.500V12l3 2"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2.200"/><circle cx="9" cy="12" r="2.200"/><circle cx="17" cy="18" r="2.200"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.500 6.500l4 4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.500-7 10-7 10 7 10 7-3.500 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.500l2.700 2.700L16 9.500"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.200v.1"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.500v5.500M12 16.200v.1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.500M12 7.800v.1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.500 11 12 15.500 16.500 11M5 20h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7.500 9 12 4.500 16.500 9M5 20h14"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.600 5.600 6.100.7-4.500 4.200 1.200 6L12 16.600 6.600 19.500l1.200-6L3.300 9.300l6.100-.7z"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main" id="skip-link">Skip to main content</a>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="9" class="brand-mark-bg"/><path d="M9 23v-6M16 23V12M23 23V8" class="brand-mark-bars"/></svg>
+        <span class="brand-name">StudentBudget</span>
+      </div>
+      <nav aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="#dashboard" data-nav="dashboard"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"/></svg><span>Dashboard</span></a></li>
+          <li><a class="nav-link" href="#allowance" data-nav="allowance"><svg class="icon" aria-hidden="true"><use href="#i-wallet"/></svg><span>Allowance</span></a></li>
+          <li><a class="nav-link" href="#expenses" data-nav="expenses"><svg class="icon" aria-hidden="true"><use href="#i-receipt"/></svg><span>Expenses</span></a></li>
+          <li><a class="nav-link" href="#savings" data-nav="savings"><svg class="icon" aria-hidden="true"><use href="#i-savings"/></svg><span>Savings</span></a></li>
+          <li><a class="nav-link" href="#history" data-nav="history"><svg class="icon" aria-hidden="true"><use href="#i-history"/></svg><span>History and reports</span></a></li>
+          <li><a class="nav-link" href="#settings" data-nav="settings"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span>Settings</span></a></li>
+        </ul>
+      </nav>
+      <p class="sidebar-note">Your data is saved only in this browser on this device.</p>
+    </aside>
+    <div class="scrim" id="nav-scrim"></div>
+
+    <div class="content">
+      <header class="topbar">
+        <button class="btn-icon topbar-menu" type="button" id="nav-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open menu"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+        <span class="topbar-title">StudentBudget</span>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <noscript><p class="alert alert-error">StudentBudget needs JavaScript to run. Turn it on in your browser and reload this page.</p></noscript>
+
+        <!-- ============ DASHBOARD ============ -->
+        <section class="view" data-view="dashboard" aria-labelledby="h-dashboard">
+          <header class="view-head">
+            <div>
+              <h1 id="h-dashboard" tabindex="-1">Dashboard</h1>
+              <p class="view-sub"><time id="dash-date"></time></p>
+            </div>
+            <button class="btn btn-primary" type="button" id="dash-add-expense"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Add expense</button>
+          </header>
+
+          <div class="card welcome" id="dash-empty" hidden>
+            <h2>Welcome to StudentBudget</h2>
+            <p>Nothing is recorded yet, so every figure below starts at zero. Record today's allowance first, then add expenses as you spend.</p>
+            <div class="btn-row">
+              <a class="btn btn-primary" href="#allowance">Record allowance</a>
+              <button class="btn btn-ghost" type="button" id="dash-empty-expense">Add first expense</button>
+            </div>
+          </div>
+
+          <div class="alerts" id="dash-alerts"></div>
+
+          <div class="summary-grid">
+            <article class="card hero-card" aria-labelledby="t-balance">
+              <h2 class="card-label" id="t-balance">Remaining Daily Balance</h2>
+              <p class="hero-figure" id="sum-balance">0.00</p>
+              <p class="card-note" id="sum-balance-note"></p>
+              <div class="meter" id="daily-progress" role="progressbar" aria-label="Daily spending progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="meter-fill" id="daily-progress-fill"></div>
+              </div>
+              <p class="meter-text" id="daily-progress-text"></p>
+            </article>
+
+            <article class="card stat stat-a" aria-labelledby="t-allowance">
+              <h2 class="card-label" id="t-allowance">Today's Allowance</h2>
+              <p class="stat-figure" id="sum-allowance">0.00</p>
+              <p class="card-note" id="sum-allowance-note"></p>
+            </article>
+            <article class="card stat stat-b" aria-labelledby="t-expenses">
+              <h2 class="card-label" id="t-expenses">Today's Expenses</h2>
+              <p class="stat-figure" id="sum-expenses">0.00</p>
+              <p class="card-note" id="sum-expenses-note"></p>
+            </article>
+            <article class="card stat stat-c" aria-labelledby="t-savings">
+              <h2 class="card-label" id="t-savings">Total Savings</h2>
+              <p class="stat-figure" id="sum-savings">0.00</p>
+              <p class="card-note" id="sum-savings-note"></p>
+            </article>
+            <article class="card stat stat-d" aria-labelledby="t-month">
+              <h2 class="card-label" id="t-month">Total Expenses This Month</h2>
+              <p class="stat-figure" id="sum-month">0.00</p>
+              <p class="card-note" id="sum-month-note"></p>
+            </article>
+          </div>
+
+          <div class="dash-grid">
+            <section class="card" aria-labelledby="h-week">
+              <div class="card-head"><h2 id="h-week">Last 7 days</h2></div>
+              <div class="chart-host" id="week-chart"></div>
+              <p class="card-note" id="week-summary"></p>
+            </section>
+
+            <section class="card" aria-labelledby="h-categories">
+              <div class="card-head"><h2 id="h-categories">Spending by category this month</h2></div>
+              <ul class="bar-list" id="category-breakdown"></ul>
+              <p class="empty-text" id="category-empty" hidden>No expenses recorded this month yet.</p>
+            </section>
+
+            <section class="card dash-wide" aria-labelledby="h-recent">
+              <div class="card-head">
+                <h2 id="h-recent">Recent transactions</h2>
+                <a class="link" href="#expenses">View all expenses</a>
+              </div>
+              <ul class="tx-list" id="recent-list"></ul>
+              <p class="empty-text" id="recent-empty" hidden>No expenses yet. When you add one, it shows up here.</p>
+            </section>
+          </div>
+        </section>
+
+        <!-- ============ ALLOWANCE ============ -->
+        <section class="view" data-view="allowance" aria-labelledby="h-allowance" hidden>
+          <header class="view-head">
+            <div>
+              <h1 id="h-allowance" tabindex="-1">Allowance</h1>
+              <p class="view-sub">Record the money you receive, one date at a time.</p>
+            </div>
+          </header>
+
+          <div class="two-col">
+            <div class="stack">
+              <section class="card" aria-labelledby="h-al-date">
+                <h2 id="h-al-date">Selected date</h2>
+                <div class="date-picker">
+                  <button class="btn-icon" type="button" id="al-prev" aria-label="Previous day"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg></button>
+                  <div class="field field-tight">
+                    <label for="al-date">Date</label>
+                    <input id="al-date" type="date" min="1900-01-01" max="2100-12-31">
+                  </div>
+                  <button class="btn-icon" type="button" id="al-next" aria-label="Next day"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
+                  <button class="btn btn-ghost btn-small" type="button" id="al-today">Today</button>
+                </div>
+                <p class="date-heading" id="al-selected-label"></p>
+                <dl class="figure-list">
+                  <div><dt>Allowance for this date</dt><dd id="al-total">0.00</dd></div>
+                  <div><dt>Expenses on this date</dt><dd id="al-expenses">0.00</dd></div>
+                  <div><dt>Daily balance</dt><dd id="al-balance">0.00</dd></div>
+                </dl>
+                <p class="status-text" id="al-status"></p>
+              </section>
+
+              <section class="card" aria-labelledby="h-al-records">
+                <h2 id="h-al-records">Records for this date</h2>
+                <ul class="record-list" id="al-records"></ul>
+                <p class="empty-text" id="al-records-empty" hidden>No allowance recorded for this date.</p>
+              </section>
+            </div>
+
+            <div class="stack">
+              <section class="card" aria-labelledby="h-al-form">
+                <h2 id="h-al-form">Record allowance</h2>
+                <form id="al-form" novalidate autocomplete="off">
+                  <div class="field">
+                    <label for="al-amount">Amount</label>
+                    <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="al-amount" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00"></div>
+                    <p class="field-error" id="al-amount-error" hidden></p>
+                  </div>
+                  <div class="field">
+                    <label for="al-note">Note (optional)</label>
+                    <input id="al-note" type="text" maxlength="200" placeholder="For example, weekly baon from Mama">
+                    <p class="field-error" id="al-note-error" hidden></p>
+                  </div>
+                  <p class="hint" id="al-hint"></p>
+                  <button class="btn btn-primary" type="submit" id="al-submit">Save allowance</button>
+                </form>
+              </section>
+
+              <section class="card" aria-labelledby="h-usual">
+                <h2 id="h-usual">Usual daily allowance</h2>
+                <p class="hint">This only pre-fills the amount above. It never adds money on its own, and days without a record stay at zero.</p>
+                <form id="usual-form" novalidate autocomplete="off">
+                  <div class="field">
+                    <label for="usual-amount">Usual amount (0 for none)</label>
+                    <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="usual-amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div>
+                    <p class="field-error" id="usual-amount-error" hidden></p>
+                  </div>
+                  <button class="btn btn-ghost" type="submit">Save usual amount</button>
+                </form>
+              </section>
+
+              <section class="card" aria-labelledby="h-al-limits">
+                <h2 id="h-al-limits">Spending limit and savings goal</h2>
+                <form id="al-limits-form" novalidate autocomplete="off">
+                  <div class="field">
+                    <label for="al-limit">Daily spending limit (0 for no limit)</label>
+                    <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="al-limit" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div>
+                    <p class="field-error" id="al-limit-error" hidden></p>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <label for="al-goal-period">Savings goal period</label>
+                      <select id="al-goal-period"><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select>
+                    </div>
+                    <div class="field">
+                      <label for="al-goal-amount">Amount to save (0 for none)</label>
+                      <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="al-goal-amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div>
+                      <p class="field-error" id="al-goal-amount-error" hidden></p>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary" type="submit">Save limit and goal</button>
+                </form>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ EXPENSES ============ -->
+        <section class="view" data-view="expenses" aria-labelledby="h-expenses" hidden>
+          <header class="view-head">
+            <div>
+              <h1 id="h-expenses" tabindex="-1">Expenses</h1>
+              <p class="view-sub">Add, search, and sort everything you have spent.</p>
+            </div>
+            <button class="btn btn-primary" type="button" id="ex-add"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Add expense</button>
+          </header>
+
+          <section class="card" aria-label="Filter expenses">
+            <div class="filters">
+              <div class="field field-tight">
+                <label for="ex-search">Search description</label>
+                <input id="ex-search" type="search" placeholder="Search expenses" autocomplete="off">
+              </div>
+              <div class="field field-tight">
+                <label for="ex-filter-category">Category</label>
+                <select id="ex-filter-category"></select>
+              </div>
+              <div class="field field-tight">
+                <label for="ex-filter-from">From</label>
+                <input id="ex-filter-from" type="date" min="1900-01-01" max="2100-12-31">
+              </div>
+              <div class="field field-tight">
+                <label for="ex-filter-to">To</label>
+                <input id="ex-filter-to" type="date" min="1900-01-01" max="2100-12-31">
+              </div>
+              <div class="field field-tight">
+                <label for="ex-sort">Sort by</label>
+                <select id="ex-sort">
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                  <option value="highest">Highest amount</option>
+                  <option value="lowest">Lowest amount</option>
+                </select>
+              </div>
+              <button class="btn btn-ghost" type="button" id="ex-clear-filters">Clear filters</button>
+            </div>
+            <p class="field-error" id="ex-range-error" role="alert" hidden></p>
+          </section>
+
+          <section class="card list-card" aria-labelledby="h-ex-list">
+            <div class="card-head">
+              <h2 id="h-ex-list">Transactions</h2>
+              <p class="totals"><span id="ex-count"></span> <strong id="ex-total"></strong></p>
+            </div>
+            <ul class="expense-list" id="expense-list"></ul>
+            <div class="empty-state" id="expense-empty" hidden></div>
+            <div class="center"><button class="btn btn-ghost" type="button" id="ex-more" hidden>Show more</button></div>
+          </section>
+        </section>
+
+        <!-- ============ SAVINGS ============ -->
+        <section class="view" data-view="savings" aria-labelledby="h-savings" hidden>
+          <header class="view-head">
+            <div>
+              <h1 id="h-savings" tabindex="-1">Savings</h1>
+              <p class="view-sub">Savings are tracked on their own. They never change your daily balance unless you choose to record a deposit as an expense.</p>
+            </div>
+            <button class="btn btn-primary" type="button" id="goal-add"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>New goal</button>
+          </header>
+
+          <div class="savings-top">
+            <section class="card" aria-labelledby="h-sv-total">
+              <h2 class="card-label" id="h-sv-total">Total saved</h2>
+              <p class="stat-figure" id="sv-total">0.00</p>
+              <p class="card-note" id="sv-total-note"></p>
+            </section>
+            <section class="card" aria-labelledby="h-period" id="period-goal"></section>
+          </div>
+
+          <ul class="goal-grid" id="goal-list"></ul>
+          <div class="card empty-state" id="goal-empty" hidden></div>
+        </section>
+
+        <!-- ============ HISTORY ============ -->
+        <section class="view" data-view="history" aria-labelledby="h-history" hidden>
+          <header class="view-head">
+            <div>
+              <h1 id="h-history" tabindex="-1">History and reports</h1>
+              <p class="view-sub">Everything you have recorded, with totals worked out from your saved data.</p>
+            </div>
+          </header>
+
+          <section class="card" aria-label="Filter history">
+            <div class="filters">
+              <div class="field field-tight">
+                <label for="hs-preset">Date range</label>
+                <select id="hs-preset">
+                  <option value="this-month">This month</option>
+                  <option value="last-7">Last 7 days</option>
+                  <option value="last-30">Last 30 days</option>
+                  <option value="all">All time</option>
+                  <option value="custom">Custom range</option>
+                </select>
+              </div>
+              <div class="field field-tight">
+                <label for="hs-from">From</label>
+                <input id="hs-from" type="date" min="1900-01-01" max="2100-12-31">
+              </div>
+              <div class="field field-tight">
+                <label for="hs-to">To</label>
+                <input id="hs-to" type="date" min="1900-01-01" max="2100-12-31">
+              </div>
+              <div class="field field-tight">
+                <label for="hs-type">Record type</label>
+                <select id="hs-type">
+                  <option value="all">All records</option>
+                  <option value="allowance">Allowance</option>
+                  <option value="expense">Expenses</option>
+                  <option value="savings">Savings</option>
+                </select>
+              </div>
+              <div class="field field-tight">
+                <label for="hs-category">Expense category</label>
+                <select id="hs-category"></select>
+              </div>
+              <div class="field field-tight">
+                <label for="hs-search">Search</label>
+                <input id="hs-search" type="search" placeholder="Description or note" autocomplete="off">
+              </div>
+              <button class="btn btn-ghost" type="button" id="hs-clear">Reset filters</button>
+            </div>
+            <p class="field-error" id="hs-range-error" role="alert" hidden></p>
+          </section>
+
+          <section class="card" aria-labelledby="h-report">
+            <div class="card-head">
+              <h2 id="h-report">Report</h2>
+              <p class="card-note" id="hs-range-label"></p>
+            </div>
+            <p class="hint">The report uses the date range above. Savings are shown separately and are not part of the net balance.</p>
+            <dl class="report-figures">
+              <div><dt>Total allowance</dt><dd id="hs-allowance">0.00</dd></div>
+              <div><dt>Total expenses</dt><dd id="hs-expenses">0.00</dd></div>
+              <div><dt>Net balance</dt><dd id="hs-net">0.00</dd></div>
+              <div><dt>Net saved</dt><dd id="hs-saved">0.00</dd></div>
+            </dl>
+            <p class="empty-text" id="hs-report-empty" hidden>No records fall in this date range, so there is nothing to total yet.</p>
+            <div id="hs-report-tables">
+              <div class="card-head sub-head">
+                <h3 id="hs-periods-title">Daily summary</h3>
+                <div class="field field-tight inline-field">
+                  <label for="hs-group">Group by</label>
+                  <select id="hs-group">
+                    <option value="daily">Day</option>
+                    <option value="weekly">Week</option>
+                    <option value="monthly">Month</option>
+                  </select>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <caption class="sr-only">Allowance, expenses, balance, and savings for each period</caption>
+                  <thead><tr><th scope="col">Period</th><th scope="col" class="num">Allowance</th><th scope="col" class="num">Expenses</th><th scope="col" class="num">Balance</th><th scope="col" class="num">Net saved</th></tr></thead>
+                  <tbody id="hs-periods"></tbody>
+                </table>
+              </div>
+              <h3 class="sub-head-title">Spending by category</h3>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <caption class="sr-only">Expenses grouped by category for the selected date range</caption>
+                  <thead><tr><th scope="col">Category</th><th scope="col" class="num">Entries</th><th scope="col" class="num">Total</th><th scope="col" class="num">Share</th></tr></thead>
+                  <tbody id="hs-categories"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="card list-card" aria-labelledby="h-hs-list">
+            <div class="card-head">
+              <h2 id="h-hs-list">All records</h2>
+              <p class="card-note" id="hs-count"></p>
+            </div>
+            <ul class="history-list" id="history-list"></ul>
+            <div class="empty-state" id="history-empty" hidden></div>
+            <div class="center"><button class="btn btn-ghost" type="button" id="hs-more" hidden>Show more</button></div>
+          </section>
+        </section>
+
+        <!-- ============ SETTINGS ============ -->
+        <section class="view" data-view="settings" aria-labelledby="h-settings" hidden>
+          <header class="view-head">
+            <div>
+              <h1 id="h-settings" tabindex="-1">Settings</h1>
+              <p class="view-sub">Changes to appearance and currency apply as soon as you pick them.</p>
+            </div>
+          </header>
+
+          <div class="two-col">
+            <div class="stack">
+              <section class="card" aria-labelledby="h-appearance">
+                <h2 id="h-appearance">Appearance and currency</h2>
+                <fieldset class="segmented">
+                  <legend>Theme</legend>
+                  <label class="seg-option"><input type="radio" name="theme" id="theme-dark" value="dark"><span>Dark mode</span></label>
+                  <label class="seg-option"><input type="radio" name="theme" id="theme-light" value="light"><span>Light mode</span></label>
+                </fieldset>
+                <div class="field">
+                  <label for="st-currency">Currency</label>
+                  <select id="st-currency"></select>
+                </div>
+              </section>
+
+              <section class="card" aria-labelledby="h-st-limits">
+                <h2 id="h-st-limits">Spending limit and savings goal</h2>
+                <form id="st-limits-form" novalidate autocomplete="off">
+                  <div class="field">
+                    <label for="st-limit">Daily spending limit (0 for no limit)</label>
+                    <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="st-limit" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div>
+                    <p class="field-error" id="st-limit-error" hidden></p>
+                  </div>
+                  <div class="field-row">
+                    <div class="field">
+                      <label for="st-goal-period">Savings goal period</label>
+                      <select id="st-goal-period"><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select>
+                    </div>
+                    <div class="field">
+                      <label for="st-goal-amount">Amount to save (0 for none)</label>
+                      <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="st-goal-amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00"></div>
+                      <p class="field-error" id="st-goal-amount-error" hidden></p>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary" type="submit">Save limit and goal</button>
+                </form>
+              </section>
+            </div>
+
+            <div class="stack">
+              <section class="card" aria-labelledby="h-backup">
+                <h2 id="h-backup">Backup and restore</h2>
+                <p class="hint">Your data lives only in this browser on this device. It is not synced anywhere, so export a backup to keep a copy or move to another device.</p>
+                <div class="btn-row">
+                  <button class="btn btn-primary" type="button" id="export-btn"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Export backup</button>
+                  <label class="btn btn-ghost file-btn" for="import-file"><svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg>Import backup</label>
+                  <input class="sr-only" id="import-file" type="file" accept=".json,application/json">
+                </div>
+                <p class="status-text" id="import-status" role="status"></p>
+              </section>
+
+              <section class="card danger-card" aria-labelledby="h-danger">
+                <h2 id="h-danger">Reset all data</h2>
+                <p class="hint">This permanently deletes your allowance records, expenses, savings, and settings from this browser. Export a backup first if you might need them.</p>
+                <button class="btn btn-danger" type="button" id="reset-btn"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>Reset all data</button>
+              </section>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <!-- ============ DIALOGS ============ -->
+  <dialog class="modal" id="expense-dialog" aria-labelledby="ex-dialog-title">
+    <form id="expense-form" novalidate autocomplete="off">
+      <div class="modal-head">
+        <h2 id="ex-dialog-title">Add expense</h2>
+        <button class="btn-icon" type="button" data-close-dialog aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="ex-id">
+        <div class="field">
+          <label for="ex-description">Description</label>
+          <input id="ex-description" type="text" maxlength="80" placeholder="For example, lunch at the canteen" required>
+          <p class="field-error" id="ex-description-error" hidden></p>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="ex-amount">Amount</label>
+            <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="ex-amount" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00" required></div>
+            <p class="field-error" id="ex-amount-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="ex-date">Date</label>
+            <input id="ex-date" type="date" min="1900-01-01" max="2100-12-31" required>
+            <p class="field-error" id="ex-date-error" hidden></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ex-category">Category</label>
+          <select id="ex-category"></select>
+          <p class="field-error" id="ex-category-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="ex-notes">Notes (optional)</label>
+          <textarea id="ex-notes" rows="3" maxlength="300"></textarea>
+          <p class="field-error" id="ex-notes-error" hidden></p>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" type="button" data-close-dialog>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="ex-submit">Save expense</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="detail-dialog" aria-labelledby="dt-title">
+    <div class="modal-head">
+      <h2 id="dt-title">Expense details</h2>
+      <button class="btn-icon" type="button" data-close-dialog aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <dl class="detail-list">
+        <div><dt>Amount</dt><dd id="dt-amount"></dd></div>
+        <div><dt>Category</dt><dd id="dt-category"></dd></div>
+        <div><dt>Date</dt><dd id="dt-date"></dd></div>
+        <div><dt>Notes</dt><dd id="dt-notes"></dd></div>
+        <div><dt>Added on</dt><dd id="dt-created"></dd></div>
+      </dl>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger-ghost" type="button" id="dt-delete">Delete</button>
+      <button class="btn btn-ghost" type="button" id="dt-edit">Edit</button>
+      <button class="btn btn-primary" type="button" data-close-dialog>Done</button>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="allowance-dialog" aria-labelledby="ae-title">
+    <form id="allowance-edit-form" novalidate autocomplete="off">
+      <div class="modal-head">
+        <h2 id="ae-title">Edit allowance record</h2>
+        <button class="btn-icon" type="button" data-close-dialog aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="ae-id">
+        <div class="field-row">
+          <div class="field">
+            <label for="ae-amount">Amount</label>
+            <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="ae-amount" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00"></div>
+            <p class="field-error" id="ae-amount-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="ae-date">Date</label>
+            <input id="ae-date" type="date" min="1900-01-01" max="2100-12-31">
+            <p class="field-error" id="ae-date-error" hidden></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ae-note">Note (optional)</label>
+          <input id="ae-note" type="text" maxlength="200">
+          <p class="field-error" id="ae-note-error" hidden></p>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" type="button" data-close-dialog>Cancel</button>
+        <button class="btn btn-primary" type="submit">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="goal-dialog" aria-labelledby="goal-dialog-title">
+    <form id="goal-form" novalidate autocomplete="off">
+      <div class="modal-head">
+        <h2 id="goal-dialog-title">New savings goal</h2>
+        <button class="btn-icon" type="button" data-close-dialog aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="goal-id">
+        <div class="field">
+          <label for="goal-name">Goal name</label>
+          <input id="goal-name" type="text" maxlength="60" placeholder="For example, new laptop" required>
+          <p class="field-error" id="goal-name-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="goal-target">Target amount</label>
+          <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="goal-target" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00" required></div>
+          <p class="field-error" id="goal-target-error" hidden></p>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" type="button" data-close-dialog>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="goal-submit">Save goal</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="saving-dialog" aria-labelledby="sv-dialog-title">
+    <form id="saving-form" novalidate autocomplete="off">
+      <div class="modal-head">
+        <h2 id="sv-dialog-title">Add savings</h2>
+        <button class="btn-icon" type="button" data-close-dialog aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="sv-goal-id">
+        <fieldset class="segmented">
+          <legend>What are you recording?</legend>
+          <label class="seg-option"><input type="radio" name="sv-type" id="sv-type-deposit" value="deposit" checked><span>Money saved</span></label>
+          <label class="seg-option"><input type="radio" name="sv-type" id="sv-type-withdrawal" value="withdrawal"><span>Withdrawal</span></label>
+        </fieldset>
+        <p class="hint" id="sv-info"></p>
+        <div class="field-row">
+          <div class="field">
+            <label for="sv-amount">Amount</label>
+            <div class="input-affix"><span class="affix" data-currency-symbol aria-hidden="true"></span><input id="sv-amount" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00"></div>
+            <p class="field-error" id="sv-amount-error" hidden></p>
+          </div>
+          <div class="field">
+            <label for="sv-date">Date</label>
+            <input id="sv-date" type="date" min="1900-01-01" max="2100-12-31">
+            <p class="field-error" id="sv-date-error" hidden></p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="sv-note">Note (optional)</label>
+          <input id="sv-note" type="text" maxlength="200">
+          <p class="field-error" id="sv-note-error" hidden></p>
+        </div>
+        <div class="check-field" id="sv-expense-wrap">
+          <input type="checkbox" id="sv-as-expense">
+          <label for="sv-as-expense">Also record this deposit as an expense. Leave this off if the money was not part of your daily spending.</label>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" type="button" data-close-dialog>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="sv-submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal modal-small" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="modal-head"><h2 id="confirm-title">Are you sure?</h2></div>
+    <div class="modal-body"><p id="confirm-message"></p></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" type="button" id="confirm-cancel">Cancel</button>
+      <button class="btn btn-danger" type="button" id="confirm-ok">Confirm</button>
+    </div>
+  </dialog>
+
+  <dialog class="modal modal-small" id="reset-dialog" aria-labelledby="reset-title" aria-describedby="reset-message">
+    <div class="modal-head"><h2 id="reset-title">Reset all data?</h2></div>
+    <div class="modal-body">
+      <p id="reset-message">Everything saved in this browser will be deleted, including allowance records, expenses, savings goals, and settings. This cannot be undone.</p>
+      <div class="field">
+        <label for="reset-input">Type RESET to confirm</label>
+        <input id="reset-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" type="button" id="reset-cancel">Cancel</button>
+      <button class="btn btn-danger" type="button" id="reset-ok" disabled>Delete everything</button>
+    </div>
+  </dialog>
+</body>
+</html>
